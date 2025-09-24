@@ -1,6 +1,7 @@
 class Ship {
-    constructor(length) {
+    constructor(length, name) {
         this.length = length;
+        this.name = name;
         this.hits = 0;
         this.isSunk = false;
     }
@@ -27,17 +28,18 @@ class Ship {
 
 }
 
-const carrier = new Ship(5)
-const battleship = new Ship(4)
-const cruiser = new Ship(3)
-const submarine = new Ship(3)
-const patrolboat = new Ship(2)
+const carrier = new Ship(5, "carrier")
+const battleship = new Ship(4, "battleship")
+const cruiser = new Ship(3, "cruiser")
+const submarine = new Ship(3, "submarine")
+const patrolboat = new Ship(2, "patrolboat")
 
 class Gameboard {
     constructor(rows, columns) {
         this.rows = rows;
         this.columns = columns;
         this.board = [];
+        this.ships = [];
     }
 
     createBoard() {
@@ -62,30 +64,60 @@ class Gameboard {
         }
     }
 
-    placeShip(length, x, y, orientation) {
+    placeShip(ship, x, y, orientation) {
         if (orientation == "horizontal") {
-            if (length  + x > this.columns) {
-                return console.log("Invalid placement")
+            if (ship.length  + x > this.columns) {
+                return "Invalid placement"
             }
-            for (let i = 0; i < length; i++) {
-                this.board[y][x + i] = "S"
+            for (let i = 0; i < ship.length; i++) {
+                this.board[y][x + i] = ship
             }
         } else if (orientation == "vertical") {
-            if (length  + y > this.rows) {
-                return console.log("Invalid placement")
+            if (ship.length  + y > this.rows) {
+                return "Invalid placement"
             }
-            for (let i = 0; i < length; i++) {
-                this.board[y + i][x] = "S"
+            for (let i = 0; i < ship.length; i++) {
+                this.board[y + i][x] = ship
             }
         }
+        this.ships.push(ship);
+    }
+
+    receiveAttack(x, y) {
+        let coordinates = this.board[y][x]
+        if (coordinates != 0) {
+            coordinates.getHit();
+            this.board[y][x] = "HIT"
+        } else {
+            this.board[y][x] = "MISS"
+        }
+
+    }
+
+    checkIfAllShipsSunk() {
+        for (let i = 0; i < this.ships.length; i++) {
+            if (this.ships[i].isSunk != true) {
+                return "There are still ships on the board"
+            } 
+        }
+        return "All ships sunk"
     }
 }
 
     const player = new Gameboard(10, 10);
 
     player.createBoard();
-    player.placeShip(5, 5, 1, "vertical");
+    player.placeShip(carrier, 0, 0, "vertical");
+    player.receiveAttack(0, 0);
+    player.receiveAttack(0, 1);
+    player.receiveAttack(0, 2);
+    player.receiveAttack(0, 3);
+    player.receiveAttack(0, 4);
+    console.log(carrier.checkHits());
     player.displayBoard();
+    console.log(carrier.checkStatus());
+    console.log(player.checkIfAllShipsSunk());
+    
 
 
-module.exports = { carrier }
+module.exports = { Ship, Gameboard }
