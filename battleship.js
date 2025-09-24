@@ -104,20 +104,12 @@ class Gameboard {
     }
 }
 
-    const player = new Gameboard(10, 10);
-
-    player.createBoard();
-    player.placeShip(carrier, 0, 0, "vertical");
-    player.receiveAttack(0, 0);
-    player.receiveAttack(0, 1);
-    player.receiveAttack(0, 2);
-    player.receiveAttack(0, 3);
-    player.receiveAttack(0, 4);
-    console.log(carrier.checkHits());
-    player.displayBoard();
-    console.log(carrier.checkStatus());
-    console.log(player.checkIfAllShipsSunk());
-    
+    class Player {
+        constructor(x, y) {
+        this.playerBoard = new Gameboard(x, y)
+        this.playerBoard.createBoard();
+        }
+    }
 
 
-module.exports = { Ship, Gameboard }
+module.exports = { Ship, Gameboard, Player, carrier, battleship, cruiser, submarine, patrolboat }
