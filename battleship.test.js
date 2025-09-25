@@ -1,4 +1,4 @@
-const { Ship, Gameboard, Player } = require("./battleship");
+import { Ship, Gameboard, Player } from "./battleship.js"
 
 let carrier;
 let human;

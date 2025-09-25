@@ -1,0 +1,8 @@
+Create Grid and Players on page load
+User can drag and drop fleet on coordinates randomize
+User presser start game button and gameboard gets updated with ships
+Program renders gameboard
+Everytime a player presses a cell the gameboard gets rendered
+    if cell is a hit then color with hit and skip other player turn
+    if cell is a miss then color with miss and next player turn
+    

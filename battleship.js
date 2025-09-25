@@ -1,4 +1,4 @@
-class Ship {
+export class Ship {
   constructor(length, name) {
     this.length = length;
     this.name = name;
@@ -27,13 +27,7 @@ class Ship {
   }
 }
 
-const carrier = new Ship(5, "carrier");
-const battleship = new Ship(4, "battleship");
-const cruiser = new Ship(3, "cruiser");
-const submarine = new Ship(3, "submarine");
-const patrolboat = new Ship(2, "patrolboat");
-
-class Gameboard {
+export class Gameboard {
   constructor(rows, columns) {
     this.rows = rows;
     this.columns = columns;
@@ -101,20 +95,9 @@ class Gameboard {
   }
 }
 
-class Player {
+export class Player {
   constructor(x, y) {
     this.playerBoard = new Gameboard(x, y);
     this.playerBoard.createBoard();
   }
 }
-
-module.exports = {
-  Ship,
-  Gameboard,
-  Player,
-  carrier,
-  battleship,
-  cruiser,
-  submarine,
-  patrolboat,
-};

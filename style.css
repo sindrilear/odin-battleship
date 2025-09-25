@@ -50,6 +50,11 @@ html, body {
     border-color:#AAC0AA;
 }
 
+.gridcell.Computer:hover {
+    background-color:#EF7C8E;
+    cursor:crosshair;
+}
+
 .gridrow {
     display:flex;
     flex-grow: 1;
