@@ -21,9 +21,14 @@ export class Ship {
   getHit() {
     this.hits++;
 
-    if (this.hits == this.length) {
+    if (this.hits === this.length) {
       this.isSunk = true;
     }
+  }
+
+  resetHits() {
+    this.hits = 0;
+    this.isSunk = false;
   }
 }
 
@@ -36,11 +41,7 @@ export class Gameboard {
   }
 
   checkIfShipsPlaced() {
-    if (this.ships.length < 4) {
-      return false;
-    } else {
-      return true;
-    }
+    return this.ships.length >= 5;
   }
 
   createBoard() {
@@ -60,59 +61,65 @@ export class Gameboard {
   clearBoard() {
     this.board = [];
     this.createBoard();
-    }
+    this.ships = [];
+  }
 
   displayBoard() {
     for (let i = 0; i < this.rows; i++) {
       console.log(this.board[i]);
-      for (let j = 0; j < this.columns; j++) {}
     }
   }
 
   checkIfShip(x, y) {
-    console.log(`Checking coordinates ${x}, ${y}`)
-    console.log(`Checked: ${this.board[y][x]}`)
-    return this.board[x][y] != 0;
+    if (!this.board[y]) return false;
+    if (this.board[y][x] === undefined) return false;
+    return this.board[y][x] !== 0;
   }
 
-  placeShip(ship, x, y, orientation,randomCell) {
-    console.log(`Attempting to place ship ${ship.name}`)
-    if (orientation == "horizontal") {
+  placeShip(ship, x, y, orientation, randomCell) {
+    x = Number(x);
+    y = Number(y);
+
+    if (orientation === "horizontal") {
       if (ship.length + x > this.columns) {
         return "Invalid placement";
-      } 
+      }
       for (let i = 0; i < ship.length; i++) {
-        if (this.checkIfShip(y, x + i)) {
-          console.log("SHIP IN THE WAY")
+        if (this.checkIfShip(x + i, y)) {
           return "Invalid placement";
         }
       }
       for (let i = 0; i < ship.length; i++) {
         this.board[y][x + i] = ship;
-        console.log(`Added ship ${randomCell} ${ship.name} with coordinates X: ${y} Y:${x + 1}`);
       }
-    } else if (orientation == "vertical") {
+    } else if (orientation === "vertical") {
       if (ship.length + y > this.rows) {
         return "Invalid placement";
       }
       for (let i = 0; i < ship.length; i++) {
-        if (this.checkIfShip(y + i, x)) {
-          console.log("SHIP IN THE WAY")
+        if (this.checkIfShip(x, y + i)) {
           return "Invalid placement";
         }
       }
       for (let i = 0; i < ship.length; i++) {
         this.board[y + i][x] = ship;
-        console.log(`Added ship ${randomCell} ${ship.name} with coordinates X: ${y + 1} Y:${x}`);
       }
+    } else {
+      return "Invalid placement";
     }
+
     this.ships.push(ship);
   }
 
   receiveAttack(x, y) {
-    let coordinates = this.board[y][x];
-    if (coordinates != 0) {
-      coordinates.getHit();
+    if (!this.board[y] || this.board[y][x] === undefined) return;
+
+    const cell = this.board[y][x];
+
+    if (cell === "HIT" || cell === "MISS") return;
+
+    if (cell !== 0) {
+      cell.getHit();
       this.board[y][x] = "HIT";
     } else {
       this.board[y][x] = "MISS";
@@ -121,11 +128,11 @@ export class Gameboard {
 
   checkIfAllShipsSunk() {
     for (let i = 0; i < this.ships.length; i++) {
-      if (this.ships[i].isSunk != true) {
-        return "There are still ships on the board";
+      if (this.ships[i].isSunk !== true) {
+        return false;
       }
     }
-    return "All ships sunk";
+    return true;
   }
 }
 

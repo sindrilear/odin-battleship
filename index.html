@@ -8,18 +8,24 @@
   </head>
   <body>
     <header>Battleship by Sindri</header>
+    <div class="gameinfo">
+      <p id="gametext">Place your ships! 🚢</p>
+    </div>
     <div class="playerscontainer">
         <div class="playerwrapper">
             <div class="label">Human</div>
+            <div class="label" id="scoretextHuman"></div>
             <div class="grid-container Human">
             </div>
             <div class="buttonwrapper">
-                <button type="button" class="randomize">Randomize Ships</button>
-                <button type="button" class="start">Start Game</button>  
+                <button type="button" class="randomize" id="randomizeButton">Randomize Ships</button>
+                <button type="button" class="start" id="startButton">Start Game</button>  
+                <button type="button" class="restart" id="restartButton">Restart Game</button>  
             </div>                                                                                            
         </div>
         <div class="playerwrapper">
             <div class="label">Computer</div>
+            <div class="label" id="scoretextComputer"></div>
             <div class="grid-container Computer">
             </div>                                                                                           
         </div>        

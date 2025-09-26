@@ -1,4 +1,4 @@
-import { Ship, Gameboard, Player } from "./battleship.js"
+import { Ship, Gameboard, Player } from "./battleship.js";
 
 let carrier;
 let human;
@@ -87,7 +87,7 @@ test("All ships sunk", () => {
   human.playerBoard.receiveAttack(0, 2);
   human.playerBoard.receiveAttack(0, 3);
   human.playerBoard.receiveAttack(0, 4);
-  expect(human.playerBoard.checkIfAllShipsSunk()).toBe("All ships sunk");
+  expect(human.playerBoard.checkIfAllShipsSunk()).toBe(true);
 });
 
 test("All ships are NOT sunk", () => {
@@ -96,7 +96,5 @@ test("All ships are NOT sunk", () => {
   human.playerBoard.receiveAttack(0, 1);
   human.playerBoard.receiveAttack(0, 2);
   human.playerBoard.receiveAttack(0, 3);
-  expect(human.playerBoard.checkIfAllShipsSunk()).toBe(
-    "There are still ships on the board"
-  );
+  expect(human.playerBoard.checkIfAllShipsSunk()).toBe(false);
 });
