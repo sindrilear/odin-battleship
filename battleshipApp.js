@@ -82,7 +82,6 @@ function attackShip(coordinates, player) {
       ) {
         computer.playerBoard.receiveAttack(y, x);
         renderGameboard(coordinates, y, x, "human");
-        computerTurn();
       }
     } else if (player == "computer") {
       human.playerBoard.receiveAttack(y, x);
@@ -125,12 +124,14 @@ function renderGameboard(coordinates, y, x, player) {
       attackedCell.style.backgroundColor = "green";
     } else {
       attackedCell.style.backgroundColor = "#660B05";
+      computerTurn();
     }
   } else if (player == "computer") {
     let attackedCell = document.getElementById(`gridcellH-${coordinates}`);
     let attackedBoard = human.playerBoard.board[x][y];
     if (attackedBoard == "HIT") {
       attackedCell.style.backgroundColor = "green";
+      computerTurn();
     } else {
       attackedCell.style.backgroundColor = "#660B05";
     }
