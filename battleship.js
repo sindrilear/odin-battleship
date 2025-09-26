@@ -35,6 +35,14 @@ export class Gameboard {
     this.ships = [];
   }
 
+  checkIfShipsPlaced() {
+    if (this.ships.length < 4) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
   createBoard() {
     const rows = this.rows;
     const columns = this.columns;
@@ -49,6 +57,11 @@ export class Gameboard {
     this.board = grid;
   }
 
+  clearBoard() {
+    this.board = [];
+    this.createBoard();
+    }
+
   displayBoard() {
     for (let i = 0; i < this.rows; i++) {
       console.log(this.board[i]);
@@ -56,20 +69,41 @@ export class Gameboard {
     }
   }
 
-  placeShip(ship, x, y, orientation) {
+  checkIfShip(x, y) {
+    console.log(`Checking coordinates ${x}, ${y}`)
+    console.log(`Checked: ${this.board[y][x]}`)
+    return this.board[x][y] != 0;
+  }
+
+  placeShip(ship, x, y, orientation,randomCell) {
+    console.log(`Attempting to place ship ${ship.name}`)
     if (orientation == "horizontal") {
       if (ship.length + x > this.columns) {
         return "Invalid placement";
+      } 
+      for (let i = 0; i < ship.length; i++) {
+        if (this.checkIfShip(y, x + i)) {
+          console.log("SHIP IN THE WAY")
+          return "Invalid placement";
+        }
       }
       for (let i = 0; i < ship.length; i++) {
         this.board[y][x + i] = ship;
+        console.log(`Added ship ${randomCell} ${ship.name} with coordinates X: ${y} Y:${x + 1}`);
       }
     } else if (orientation == "vertical") {
       if (ship.length + y > this.rows) {
         return "Invalid placement";
       }
       for (let i = 0; i < ship.length; i++) {
+        if (this.checkIfShip(y + i, x)) {
+          console.log("SHIP IN THE WAY")
+          return "Invalid placement";
+        }
+      }
+      for (let i = 0; i < ship.length; i++) {
         this.board[y + i][x] = ship;
+        console.log(`Added ship ${randomCell} ${ship.name} with coordinates X: ${y + 1} Y:${x}`);
       }
     }
     this.ships.push(ship);

@@ -1,7 +1,19 @@
 import { Ship, Gameboard, Player } from "./battleship.js";
 
-const btnplaceShips = document.querySelector(".place");
+const btnplaceShips = document.querySelector(".start");
 btnplaceShips.addEventListener("click", () => {
+  if (human.playerBoard.checkIfShipsPlaced()) {
+    initiated = true;
+  } else {
+    console.log("Ships aren't placed!")
+  }
+});
+
+const btnrandomizeShips = document.querySelector(".randomize");
+btnrandomizeShips.addEventListener("click", () => {
+  human.playerBoard.clearBoard();
+  human.playerBoard.displayBoard();
+  randomizeShips(human);
   renderGameboard();
 });
 
@@ -15,17 +27,61 @@ let initiated = false;
 let aiMoves = [];
 
 const human = new Player(10, 10);
-human.playerBoard.placeShip(carrier, 0, 0, "horizontal");
-human.playerBoard.placeShip(battleship, 0, 1, "horizontal");
-human.playerBoard.placeShip(cruiser, 0, 2, "horizontal");
-human.playerBoard.placeShip(submarine, 0, 3, "horizontal");
-human.playerBoard.placeShip(patrolboat, 0, 4, "horizontal");
 const computer = new Player(10, 10);
-computer.playerBoard.placeShip(carrier, 0, 0, "horizontal");
-computer.playerBoard.placeShip(battleship, 0, 1, "horizontal");
-computer.playerBoard.placeShip(cruiser, 0, 2, "horizontal");
-computer.playerBoard.placeShip(submarine, 0, 3, "horizontal");
-computer.playerBoard.placeShip(patrolboat, 0, 4, "horizontal");
+randomizeShips(computer);
+
+console.log(computer.playerBoard.displayBoard())
+
+
+function randomGridCell() {
+  let GridCell = Math.floor(Math.random() * 99)
+  return GridCell;
+}
+
+function createCoords(digits) {
+  const digitsArray = String(digits).split("").map(Number);
+    if (digitsArray.length < 2) {
+      digitsArray.unshift(0);
+    }
+    return digitsArray;
+}
+
+function randomizeShips(player) {
+  let usedCells = []; 
+  let Ships = [carrier, battleship, cruiser, submarine, patrolboat]
+  let ship = "";
+  while (Ships.length > 0) {
+  let validPlacement = false;
+  let shipOrientation = "horizontal"
+  ship = Ships.pop();
+    while (validPlacement == false) {
+      let randomCell = randomGridCell();
+        console.log(`Current used cells: ${usedCells}`)
+        console.log(`Used cells includes ${randomCell}? ${usedCells.includes(randomCell)}`);
+        if (usedCells.includes(randomCell) == false) {
+          let randomOrientation = Math.floor(Math.random() * 2)
+          if (randomOrientation == "0") {
+            shipOrientation = "vertical"
+            }   
+            let digitsArray = createCoords(randomCell);
+            let x = digitsArray[0];
+            let y = digitsArray[1];
+            if (player.playerBoard.placeShip(ship, x, y, shipOrientation, randomCell) != "Invalid placement") {
+              validPlacement = true;  
+              for (let i = 0; i < ship.length; i++) {
+                
+                usedCells.push(randomCell);
+                if (shipOrientation == "horizontal") {
+                  randomCell = randomCell + 10;
+                } else {
+                  randomCell++;
+                }
+              }
+            }
+          } 
+      }
+    }
+  }
 
 function createGameboard() {
   const gridContainerHuman = document.querySelector(".grid-container.Human");
@@ -68,10 +124,7 @@ function createGameboard() {
 
 function attackShip(coordinates, player) {
   if (initiated == true) {
-    const digitsArray = String(coordinates).split("").map(Number);
-    if (digitsArray.length < 2) {
-      digitsArray.unshift(0);
-    }
+    let digitsArray = createCoords(coordinates);
     let x = digitsArray[0];
     let y = digitsArray[1];
 
@@ -97,9 +150,9 @@ function renderGameboard(coordinates, y, x, player) {
   if (initiated == false) {
     for (let i = 0; i < human.playerBoard.rows; i++) {
       for (let j = 0; j < human.playerBoard.columns; j++) {
+        let gridcell = document.getElementById(`gridcellH-${gridid}`);
         if (human.playerBoard.board[i][j] != 0) {
           let shipname = human.playerBoard.board[i][j].name;
-          let gridcell = document.getElementById(`gridcellH-${gridid}`);
           if (shipname == "carrier") {
             gridcell.style.backgroundColor = "#F9ED69";
           } else if (shipname == "battleship") {
@@ -111,11 +164,12 @@ function renderGameboard(coordinates, y, x, player) {
           } else if (shipname == "patrolboat") {
             gridcell.style.backgroundColor = "#252A34";
           }
+        } else {
+          gridcell.style.backgroundColor = "#7A918D"
         }
         gridid++;
       }
     }
-    initiated = true;
   }
   if (player == "human") {
     let attackedCell = document.getElementById(`gridcellC-${coordinates}`);
@@ -141,15 +195,40 @@ function renderGameboard(coordinates, y, x, player) {
 function computerTurn() {
   let validMove = false;
   while (validMove == false) {
-  let aiMove = Math.floor(Math.random() * 99);
+  let aiMove = randomGridCell();
     if (aiMoves.includes(aiMove) == false) {
       validMove = true;
       aiMoves.push(aiMove)
       attackShip(aiMove, "computer")
     }
   }
-
 }
 
-window.createGameboard = createGameboard;
+function renderComputerBoard() {
+  let gridid = 0;
+  for (let i = 0; i < computer.playerBoard.rows; i++) {
+    for (let j = 0; j < computer.playerBoard.columns; j++) {
+      if (computer.playerBoard.board[i][j] != 0) {
+        let shipname = computer.playerBoard.board[i][j].name;
+        let gridcell = document.getElementById(`gridcellC-${gridid}`);
+        if (shipname == "carrier") {
+          gridcell.style.backgroundColor = "#F9ED69";
+        } else if (shipname == "battleship") {
+          gridcell.style.backgroundColor = "#F08A5D";
+        } else if (shipname == "cruiser") {
+          gridcell.style.backgroundColor = "#B83B5E";
+        } else if (shipname == "submarine") {
+          gridcell.style.backgroundColor = "#6A2C70";
+        } else if (shipname == "patrolboat") {
+          gridcell.style.backgroundColor = "#252A34";
+        }
+      }
+      gridid++;
+    }
+  }
+}
+
+createGameboard();
+renderComputerBoard();
+
 window.attackShip = attackShip;
