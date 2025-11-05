@@ -34,7 +34,7 @@ btnRestart.addEventListener("click", () => {
 });
 
 let initiated = false;
-let cheat = true;
+let cheat = false;
 let aiMoves = [];
 let humanScore = 0;
 let computerScore = 0;
